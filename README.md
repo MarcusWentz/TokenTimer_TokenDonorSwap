@@ -2,7 +2,7 @@
 
 Challenge submissions with bonus events added and Hardhat Unit tested. 
 
-Reults:
+#  Hardhat+Solidity coverage
 
 TokenTimeTestResult:
 
