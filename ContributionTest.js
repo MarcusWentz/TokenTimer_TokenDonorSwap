@@ -44,14 +44,10 @@ describe("Tests:", function () {
               const tx_receipt1 = await transaction1.wait()
               const transaction2 = await ContractDeployed.swapETHforCTR({ value: ethers.utils.parseEther( ('3') )  } )
               const tx_receipt2 = await transaction2.wait()
-              // const transaction2 = await expect( ContractDeployed.swapETHforCTR({ value: ethers.utils.parseEther( ('3') )  } )   ).to.be.revertedWith('Not enough CRT in contract to match ETH in msg.value!');//'With("");
-              // const tx_receipt2 = await transaction2.wait()
-              // value = await ContractDeployed.DonorAddressCounter(owner.address);
-              // expect((new ethers.BigNumber.from(value._hex).toString())).to.be.a.bignumber.that.is.equal(new ethers.BigNumber.from('0').toString())
               balanceOf = await ContractDeployed.balanceOf(ContractDeployed.address);
               expect((new ethers.BigNumber.from(balanceOf._hex).toString())).to.be.a.bignumber.that.is.equal(new ethers.BigNumber.from('4000000000000000000').toString())
         });
-        it("Send correct msg.value and see if event gets state change [ScaleFee_State = 4].", async function () {
+        it("Emit msg.value for ContributionEvent event.", async function () {
 
                 await expect( ContractDeployed.swapETHforCTR({ value: ethers.utils.parseEther( ('0.000000000000000001') )  } )   )
                 .to.emit(ContractDeployed, "ContributionEvent")
