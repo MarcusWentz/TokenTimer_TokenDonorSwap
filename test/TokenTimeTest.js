@@ -32,44 +32,36 @@ describe("Tests:", function () {
           });
           it("startingBlockTimestamp() > currentBlockTime().", async function () {
             blockTimestamp = await ContractDeployed.currentBlockTime();
-            // blockTimestampPlus2 = new ethers.BigNumber.from(blockTimestamp).plus(2);
             startingBlockTimestamp = await ContractDeployed.startingBlockTimestamp();
             expect((new ethers.BigNumber.from(startingBlockTimestamp._hex).toString())).to.be.a.bignumber.that.is.greaterThan(new ethers.BigNumber.from(blockTimestamp).toString())
           });
           it("endingBlockTimestamp() > startingBlockTimestamp().", async function () {
             startingBlockTimestamp = await ContractDeployed.startingBlockTimestamp();
-            // blockTimestampPlus60 = new ethers.BigNumber.from(blockTimestamp).plus(60);
             endingBlockTimestamp = await ContractDeployed.endingBlockTimestamp();
             expect((new ethers.BigNumber.from(endingBlockTimestamp._hex).toString())).to.be.a.bignumber.that.is.greaterThan(new ethers.BigNumber.from(startingBlockTimestamp).toString())
           });
        });
 
       describe("timerTransfer", function () {
-        it("Fail tx if msg.value ETH > CRT in contract.", async function () {
-                await network.provider.send("evm_increaseTime", [25])
+        it("Fail tx if block.timestamp < startingBlockTimestamp.", async function () {
+                await network.provider.send("evm_increaseTime", [15])
                 await network.provider.send("evm_mine")
                 await expect( ContractDeployed.timerTransfer()).to.be.revertedWith('Transfer can start after about 30 seconds after deployed!');//'With("");
         });
-        it("Fail tx if msg.value == 0", async function () {
-              await network.provider.send("evm_increaseTime", [120])
+        it("Fail tx if block.timestamp > endingBlockTimestamp.", async function () {
+              await network.provider.send("evm_increaseTime", [135])
               await network.provider.send("evm_mine")
-              // console.log((new ethers.BigNumber.from(blockTimestamp._hex).toString()))
-              // await ethers.provider.send("evm_mine", [1640313440+100]);
-              // blockTimestamp2 = await ContractDeployed.currentBlockTime();
-              // console.log((new ethers.BigNumber.from(blockTimestamp2._hex).toString()))
-              // blockTimestamp = await ContractDeployed.currentBlockTime();
-              // expect((new ethers.BigNumber.from(startingBlockTimestamp._hex).toString())).to.be.a.bignumber.that.is.greaterThan(new ethers.BigNumber.from(blockTimestamp).toString())
               await expect( ContractDeployed.timerTransfer()).to.be.revertedWith('Transfer time expired [about 120 seconds after deployment]!');//'With("");
         });
-        it("Fail tx if all funds transferred already.", async function () {
-              await network.provider.send("evm_increaseTime", [35])
+        it("Fail tx if all funds were removed already during the valid time period already.", async function () {
+              await network.provider.send("evm_increaseTime", [30])
               await network.provider.send("evm_mine")
               const transaction1 = await ContractDeployed.timerTransfer()
               const tx_receipt1 = await transaction1.wait()
               await expect( ContractDeployed.timerTransfer()).to.be.revertedWith('All funds have from contract have been moved already!');//'With("");
         });
         it("Emit msg.value for TransferEvent event.", async function () {
-                await network.provider.send("evm_increaseTime", [60])
+                await network.provider.send("evm_increaseTime", [30])
                 await network.provider.send("evm_mine")
                 await expect( ContractDeployed.timerTransfer())
                 .to.emit(ContractDeployed, "TransferEvent")
