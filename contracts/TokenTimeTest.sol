@@ -17,8 +17,8 @@ contract TokenTimeTest is ERC20{
 
     constructor() ERC20("TokenTimeTest","TTT") {
         _mint(address(this), 1*(10**18) );
-        startingBlockTimestamp =  block.timestamp + 2; //Open to transfer after 2 seconds
-        endingBlockTimestamp = block.timestamp + 60; //Transfer option ends after 30 seconds
+        startingBlockTimestamp =  block.timestamp + 15; //Open to transfer after 15 seconds [safe after at least 15 seconds from MEV]
+        endingBlockTimestamp = block.timestamp + 60; //Transfer option ends after 60 seconds
     }
 
     function currentBlockTime() public view returns (uint) {
