@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract ContributionTokenReward is ERC20{
 
-    uint public startingBlockTimestamp;
-    uint public endingBlockTimestamp;
     address public ContributionTokenRewardAddress = address(this);
     ContributionTokenReward tokenObject = ContributionTokenReward(ContributionTokenRewardAddress);
 
